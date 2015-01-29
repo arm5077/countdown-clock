@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+<head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="countdown.js"></script>
+<script src="pym.js"></script>
+
+<style type="text/css">
+	@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700);
+	
+	html, body {
+		font-family:"Open Sans", Helvetica, sans-serif;
+		padding:0;
+		margin:0;
+	}
+	
+	.clockContainer{
+		padding: 10px 0px;
+		border-top: 8px solid black;
+		border-bottom: 3px solid black;
+		width: 100%;	
+		opacity: 0;
+		transition:.25s all;
+		text-align:center;
+		display:block;
+	}
+	
+	.title {
+		margin-top:5px;
+		text-transform:uppercase;
+		padding:0px 10px;
+	}
+	
+		.title strong {
+			color: #952226;
+		}
+	
+	ul.clock{
+		list-style:none;
+		padding:0;
+		margin:10px 0px 0px;
+		color: #145786
+		
+	}
+	
+		ul.clock li {
+			display:inline-block;
+			font-size:50pt;
+			font-weight:400;
+			text-align:center;
+			margin-right:30px;
+			position:relative;
+		}
+		
+		ul.clock li:before {
+			content: attr(data-label);
+			font-weight:100;
+			font-size:10pt;
+			position:absolute;
+			left:0%;
+			width:100%;
+			color:black;
+		}
+		
+		ul.clock li:last-child{
+			margin-right:0;
+			
+		}
+	
+	@media screen and (max-width: 200px) {
+
+			ul.clock li {
+				margin-right:0;
+				width:100%;
+			}
+		
+
+	}
+	
+</style>
+
+</head>
+	
+<body>
+
+<div class="clockContainer">
+	<div class = "title">Time until the <strong>PATRIOT Act</strong> expires:</div>
+	<ul class = "clock">
+		<li id = "years" data-label = "years"></li>
+		<li id = "months" data-label = "months"></li>
+		<li id = "days" data-label = "days"></li>
+		<li id = "hours" data-label = "hours"></li>		
+		<li id = "minutes" data-label = "minutes"></li>
+		<li id = "seconds" data-label = "seconds"></li>
+	</ul>
+</div>
+
+<script type="text/javascript">
+	
+	// See if "data" parameter holds an end date
+	if( getParameterByName("date") ) 
+		endTimeString = getParameterByName("date");
+	else
+		endTimeString = "2016-11-08 20:00:00";
+
+	var endTime = Date.parse(endTimeString);
+	
+	// Set text if "title" parameter exists
+	if( getParameterByName("title") ) 
+		$(".title").html(getParameterByName("title"));
+	else
+		$(".title").html("Time until <strong>Election Day 2016</strong>")
+		
+	setInterval(function(){ update(endTime); }, 1000);
+	
+	// Center clock in window
+	function center(object){
+		$(object).css({
+			position: "absolute",
+			top: ( $(object).parent().height - $(object).height() ) / 2 + "px",
+			left: ( $(object).parent().width() - $(object).width() ) / 2 + "px"
+		});
+	}
+
+	// Update clock
+	function update(endTime) {	
+		time = countdown(null, endTime, countdown.ALL);
+		if( time.years != 0 ) {
+			$("#years").css("display", "inline-block");
+			$("#years").html( time.years );
+		}
+		else { $("#years").css("display", "none"); }
+		
+		if( time.months != 0 ) {
+			$("#months").css("display", "inline-block");
+			$("#months").html( pad_2(time.months) );
+		}
+		else { $("#months").css("display", "none"); }
+		
+		$("#days").html( pad_2(time.days) );
+		$("#hours").html( pad_2(time.hours) );
+		$("#minutes").html( pad_2(time.minutes) );
+		$("#seconds").html( pad_2(time.seconds) );
+		
+		if( time.years == 0 && time.months == 0 && time.weeks == 0 ) $("ul.clock").css("color", "#EC2026");
+		
+		$(".clockContainer").css("opacity", 1);
+	}
+	
+	function pad_2(number){
+		if(number < 10 )
+			return "0" + number;
+		else return number;
+		
+	}
+	// Thanks to http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript for this
+	function getParameterByName(name) {
+	    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+	    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+	        results = regex.exec(location.search);
+	    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+	
+
+	var pymChild = new pym.Child();
+	setInterval(function(){ pymChild.sendHeight(); console.log("Sending pym ping!") }, 1000);
+
+	
+	
+</script>
+	
+</body>
+
+
+</html>
