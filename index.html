@@ -98,11 +98,14 @@
 
 <script type="text/javascript">
 	
-	// See if "data" parameter holds an end date
+	// See if "date" parameter holds an end date
+	// Let it be known that the "date" parameter MUST be in 
+	// "Feb. 1, 2015 12:00:31" format or it will die on Safari
+	
 	if( getParameterByName("date") ) 
 		endTimeString = getParameterByName("date");
 	else
-		endTimeString = "2016-11-08 20:00:00";
+		endTimeString = "Nov. 8, 2016 20:00:00";
 
 	var endTime = Date.parse(endTimeString);
 	
@@ -125,23 +128,34 @@
 
 	// Update clock
 	function update(endTime) {	
-		time = countdown(null, endTime, countdown.ALL);
-		if( time.years != 0 ) {
-			$("#years").css("display", "inline-block");
-			$("#years").html( time.years );
-		}
-		else { $("#years").css("display", "none"); }
+		time = countdown(new Date(), endTime, countdown.ALL);
 		
-		if( time.months != 0 ) {
-			$("#months").css("display", "inline-block");
-			$("#months").html( pad_2(time.months) );
+		if( time.value <= 0 ) {
+			$("#days").html( "00" );
+			$("#hours").html( "00" );
+			$("#minutes").html( "00" );
+			$("#seconds").html( "00" );
+			$("#years").css("display", "none");
+			$("#months").css("display", "none");
 		}
-		else { $("#months").css("display", "none"); }
-		
-		$("#days").html( pad_2(time.days) );
-		$("#hours").html( pad_2(time.hours) );
-		$("#minutes").html( pad_2(time.minutes) );
-		$("#seconds").html( pad_2(time.seconds) );
+		else {
+			if( time.years != 0 ) {
+				$("#years").css("display", "inline-block");
+				$("#years").html( time.years );
+			}
+			else { $("#years").css("display", "none"); }
+
+			if( time.months != 0 ) {
+				$("#months").css("display", "inline-block");
+				$("#months").html( pad_2(time.months) );
+			}
+			else { $("#months").css("display", "none"); }
+
+			$("#days").html( pad_2(time.days) );
+			$("#hours").html( pad_2(time.hours) );
+			$("#minutes").html( pad_2(time.minutes) );
+			$("#seconds").html( pad_2(time.seconds) );	
+		}
 		
 		if( time.years == 0 && time.months == 0 && time.weeks == 0 ) $("ul.clock").css("color", "#EC2026");
 		
