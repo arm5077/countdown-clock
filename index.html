@@ -129,7 +129,6 @@
 	// Update clock
 	function update(endTime) {	
 		time = countdown(new Date(), endTime, countdown.ALL);
-		
 		if( time.value <= 0 ) {
 			$("#days").html( "00" );
 			$("#hours").html( "00" );
@@ -151,7 +150,7 @@
 			}
 			else { $("#months").css("display", "none"); }
 
-			$("#days").html( pad_2(time.days) );
+			$("#days").html( pad_2(time.days + time.weeks * 7) );
 			$("#hours").html( pad_2(time.hours) );
 			$("#minutes").html( pad_2(time.minutes) );
 			$("#seconds").html( pad_2(time.seconds) );	
